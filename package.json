@@ -1,0 +1,31 @@
+{
+  "name": "express-combyne",
+  "version": "0.1.0",
+  "description": "Combyne view engine for Express.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tbranyen/express-combyne.git"
+  },
+  "keywords": [
+    "express",
+    "combyne"
+  ],
+  "author": "Tim Branyen (@tbranyen)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tbranyen/express-combyne/issues"
+  },
+  "homepage": "https://github.com/tbranyen/express-combyne",
+  "dependencies": {
+    "combyne": "~0.3.5"
+  },
+  "devDependencies": {
+    "express": "~4.3.1",
+    "mocha": "~1.19.0",
+    "supertest": "~0.13.0"
+  }
+}
