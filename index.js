@@ -145,3 +145,5 @@ module.exports = function(options) {
   support.__proto__ = options;
   return support.__express;
 };
+
+module.exports.VERSION = require("./package.json").version;
