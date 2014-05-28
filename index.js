@@ -52,13 +52,19 @@ support.__express = function(fileName, data, next) {
   var ext = path.extname(fileName);
 
   // Read in the template name as a buffer.
-  fs.readFile(fileName, function(err, buffer) {
+  fs.readFile(fileName, "utf8", function(err, buffer) {
     // Pass up any errors.
     if (err) {
       return next(err);
     }
+
     // Send back the compiled template.
     var template = combyne(String(buffer));
+
+    // Find all renders.
+    var renders = recurse(template.tree.nodes, function(node) {
+      return node.type === "RenderExpression";
+    }).map(function(node) { return node.value; });
 
     // Find all partials.
     var partials = recurse(template.tree.nodes, function(node) {
@@ -79,6 +85,18 @@ support.__express = function(fileName, data, next) {
       filters = filters.join(" ").split(" ");
     }
 
+    // Map all renders to functions.
+    renders = renders.map(function(render) {
+      return function(callback) {
+        var name = render.template;
+
+        fs.readFile(path.join(dirname, name + ext), "utf8", function(err, contents) {
+          template.registerPartial(name, combyne(String(contents)));
+          callback(err);
+        });
+      };
+    });
+
     // Map all partials to functions.
     partials = partials.map(function(name) {
       return function(callback) {
@@ -89,8 +107,7 @@ support.__express = function(fileName, data, next) {
 
         fs.readFile(path.join(dirname, name + ext), function(err, partial) {
           template.registerPartial(name, combyne(String(partial)));
-
-          callback();
+          callback(err);
         });
       };
     });
@@ -124,14 +141,13 @@ support.__express = function(fileName, data, next) {
 
           // Register the exported function.
           template.registerFilter(name, filterModule.exports);
-
-          callback();
+          callback(err);
         });
       };
     });
 
     // Find all files and map the partials.
-    async.parallel(partials.concat(filters), function() {
+    async.parallel(partials.concat(renders, filters), function(err) {
       // Register all the global partials.
       Object.keys(support._partials).forEach(function(name) {
         var partial = support._partials[name];
@@ -145,7 +161,7 @@ support.__express = function(fileName, data, next) {
       });
 
       // Render the template.
-      next(template.render(data));
+      next(null, template.render(data));
     });
   });
 };
