@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/tbranyen/express-combyne",
   "dependencies": {
-    "async": "^0.9.0",
-    "combyne": "~0.3.5"
+    "async": "~0.9.0",
+    "combyne": "~0.3.6"
   },
   "devDependencies": {
     "express": "~4.3.1",
