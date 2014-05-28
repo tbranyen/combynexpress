@@ -1,6 +1,8 @@
 CombynExpress
 -------------
 
+> View engine support for [Combyne](https://github.com/tbranyen/combyne)
+
 [![Build Status](https://travis-ci.org/tbranyen/combynexpress.png?branch=master)](https://travis-ci.org/tbranyen/combynexpress)
 
 Created by Tim Branyen [@tbranyen](http://twitter.com/tbranyen)
