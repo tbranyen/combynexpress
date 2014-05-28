@@ -36,6 +36,13 @@ trivially load from a partials directory like:
 
 This would then map to the customized views directory and load from there.
 
+#### Registering global partials. ####
+
+You can register global partials:
+
+``` javascript
+var combynExpress = require("combynexpress");
+
 ### Working with filters. ###
 
 Within Express, all Combyne filters are mapped to views.  This allows you to
