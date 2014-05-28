@@ -82,6 +82,11 @@ support.__express = function(fileName, data, next) {
     // Map all partials to functions.
     partials = partials.map(function(name) {
       return function(callback) {
+        // Ignore those that have already been defined globally.
+        if (name in support._partials) {
+          return callback();
+        }
+
         fs.readFile(path.join(dirname, name + ext), function(err, partial) {
           template.registerPartial(name, combyne(String(partial)));
 
@@ -97,6 +102,11 @@ support.__express = function(fileName, data, next) {
       return function(callback) {
         var filtersDir = support.filtersDir || "filters";
         var filtersPath = path.join(dirname, filtersDir, name + ".js");
+
+        // Ignore those that have already been defined globally.
+        if (name in support._filters) {
+          return callback();
+        }
 
         // This is really dumb, but because Node doesn't have an asynchronous
         // `require`, we have to simulate one using a private method.
@@ -145,5 +155,8 @@ module.exports = function(options) {
   support.__proto__ = options;
   return support.__express;
 };
+
+// Ensure support is accessible.
+module.exports.__proto__ = support;
 
 module.exports.VERSION = require("./package.json").version;

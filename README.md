@@ -50,6 +50,9 @@ combynExpress.registerPartial("global", {
 });
 ```
 
+Global partial naming will override any local partials and not incur a
+filesystem hit.
+
 ### Working with filters. ###
 
 Within Express, all Combyne filters are mapped to files.  This allows you to
@@ -80,3 +83,6 @@ combynExpress.registerFilter("my-global-filter", function(value) {
   return value;
 });
 ```
+
+Global filter naming will override any local filters and not incur a filesystem
+hit.
