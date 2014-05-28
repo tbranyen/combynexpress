@@ -1,5 +1,5 @@
-Combyne support for Express
----------------------------
+CombynExpress
+-------------
 
 [![Build Status](https://travis-ci.org/tbranyen/express-combyne.png?branch=master)](https://travis-ci.org/tbranyen/express-combyne)
 
@@ -8,20 +8,20 @@ Created by Tim Branyen [@tbranyen](http://twitter.com/tbranyen)
 ### Installing. ###
 
 ``` bash
-npm install express-combyne
+npm install combynexpress
 ```
 
 ### Registering with Express. ###
 
 ``` javascript
-app.engine("combyne", require("express-combyne"));
+app.engine("combyne", require("combynexpress"));
 app.set("view engine", "combyne");
 ```
 
 If you prefer a different extension (not `.combyne`) you can easily change:
 
 ``` javascript
-app.engine("html", require("express-combyne"));
+app.engine("html", require("combynexpress"));
 app.set("view engine", "html");
 ```
 
