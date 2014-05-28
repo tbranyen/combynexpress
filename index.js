@@ -125,24 +125,9 @@ support.__express = function(fileName, data, next) {
           return callback();
         }
 
-        // This is really dumb, but because Node doesn't have an asynchronous
-        // `require`, we have to simulate one using a private method.
-        //
-        // Concepted adapted from:
-        // http://stackoverflow.com/a/13962764/282175
-        fs.readFile(filtersPath, "utf8", function(err, filter) {
-          try {
-            var filterModule = new Module(filtersPath, support);
-            filterModule._compile(filter);
-          }
-          catch (ex) {
-            callback(ex);
-          }
-
-          // Register the exported function.
-          template.registerFilter(name, filterModule.exports);
-          callback(err);
-        });
+        // Register the exported function.
+        template.registerFilter(name, require(filtersPath));
+        callback(err);
       };
     });
 
