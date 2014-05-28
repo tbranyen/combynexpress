@@ -11,18 +11,31 @@ Created by Tim Branyen [@tbranyen](http://twitter.com/tbranyen)
 npm install combynexpress
 ```
 
+### Requiring. ###
+
+``` javascript
+var combynExpress = require("combynexpress");
+```
+
 ### Registering with Express. ###
 
 ``` javascript
-app.engine("combyne", require("combynexpress"));
+app.engine("combyne", combynExpress());
 app.set("view engine", "combyne");
 ```
 
 If you prefer a different extension (not `.combyne`) you can easily change:
 
 ``` javascript
-app.engine("html", require("combynexpress"));
+app.engine("html", combynExpress());
 app.set("view engine", "html");
+```
+
+You can set certain options during the invocation by passing an object:
+
+``` javsacript
+app.engine("combyne", combynExpress({ filtersDir: "filterz" }));
+app.set("view engine", "combyne");
 ```
 
 ### Working with partials. ###
@@ -76,8 +89,6 @@ combynExpress.filtersDir = "some-other-folder";
 You can register global filters:
 
 ``` javascript
-var combynExpress = require("combynexpress");
-
 // Assign a basic identity filter.
 combynExpress.registerFilter("my-global-filter", function(value) {
   return value;
