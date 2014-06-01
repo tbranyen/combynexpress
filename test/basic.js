@@ -33,4 +33,20 @@ describe("Combyne Express support", function() {
       .get("/")
       .expect("HTML extension\n", done);
   });
+
+  it("will propagate errors", function(done) {
+    app.get("/will-error", function(req, res) {
+      res.render("error");
+    });
+
+    app.engine("html", support());
+    app.set("view engine", "html");
+
+    request(app)
+      .get("/will-error")
+      .expect(500, function(err, res) {
+        assert.equal(res.text.indexOf("Error: Failed to lookup view"), 0);
+        done();
+      });
+  });
 });

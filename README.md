@@ -52,6 +52,27 @@ trivially load from a partials directory like:
 This would then map to the customized views directory and load
 **partials/my-partial** from there.
 
+#### Working with injected partials. ####
+
+While using Express it's often desired to wrap a page template with a layout.
+
+An example layout:
+
+``` html
+<body>{%partial body%}</body>
+```
+
+A page template that looks like this:
+
+``` html
+{%render layout as body%}
+Hello world
+{%endrender%}
+```
+
+This will automatically fetch the layout view and render the page template
+within the body partial.
+
 #### Registering global partials. ####
 
 You can register global partials:
@@ -77,10 +98,9 @@ trivially load from a filters directory like:
 {{ prop|my-filter }}
 ```
 
-This will lazily require (non-blocking) the filter functions and register them
-onto the template.  In the above example it would look for
-**filters/my-filter.js** in the configured **views** directory.  You can change
-the directory to search for templates in:
+This will require the filter functions and register them onto the template.  In
+the above example it would look for **filters/my-filter.js** in the configured
+**views** directory.  You can change the directory to search for templates in:
 
 ``` javascript
 combynExpress.filtersDir = "some-other-folder";

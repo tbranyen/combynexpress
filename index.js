@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const combyne = require("combyne");
 const async = require("async");
-const Module = require("module");
 
 var support = {};
 
@@ -89,8 +88,9 @@ support.__express = function(fileName, data, next) {
     renders = renders.map(function(render) {
       return function(callback) {
         var name = render.template;
+        var renderPath = path.join(dirname, name + ext);
 
-        fs.readFile(path.join(dirname, name + ext), "utf8", function(err, contents) {
+        fs.readFile(renderPath, "utf8", function(err, contents) {
           template.registerPartial(name, combyne(String(contents)));
           callback(err);
         });
