@@ -13,6 +13,9 @@ support._partials = {};
 support.registerFilter = combyne.prototype.registerFilter;
 support.registerPartial = combyne.prototype.registerPartial;
 
+// Proxy the settings from the internal combyne object
+support.settings = combyne.settings;
+
 /**
  * Recursively traverses nodes returning those passing the truth function.
  *
