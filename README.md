@@ -40,6 +40,15 @@ app.engine("combyne", combynExpress({ filtersDir: "filterz" }));
 app.set("view engine", "combyne");
 ```
 
+### Changing Combyne settings. ###
+
+You can change internal settings to Combyne through the exposed `settings`
+property:
+
+``` javascript
+combynexpress.settings.delimiters = {};
+```
+
 ### Working with partials. ###
 
 Within Express, all Combyne partials are mapped to views.  This allows you to
@@ -103,7 +112,7 @@ the above example it would look for **filters/my-filter.js** in the configured
 **views** directory.  You can change the directory to search for templates in:
 
 ``` javascript
-combynExpress.filtersDir = "some-other-folder";
+combynExpress.settings.filtersDir = "some-other-folder";
 ```
 
 #### Registering global filters. ####

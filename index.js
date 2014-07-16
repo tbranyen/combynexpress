@@ -3,18 +3,16 @@ const path = require("path");
 const combyne = require("combyne");
 const async = require("async");
 
-var support = {};
+// Proxy the settings from the internal combyne object
+var settings = combyne.settings;
 
 // Mimic how the actual Combyne stores.
-support._filters = {};
-support._partials = {};
+settings._filters = {};
+settings._partials = {};
 
 // Proxy the filter and partial registration methods.
-support.registerFilter = combyne.prototype.registerFilter;
-support.registerPartial = combyne.prototype.registerPartial;
-
-// Proxy the settings from the internal combyne object
-support.settings = combyne.settings;
+settings.registerFilter = combyne.prototype.registerFilter;
+settings.registerPartial = combyne.prototype.registerPartial;
 
 /**
  * Recursively traverses nodes returning those passing the truth function.
@@ -43,14 +41,14 @@ function recurse(nodes, test) {
 }
 
 /**
- * Express support.
+ * Express settings.
  *
  * @param {string} fileName - The template path to load.
  * @param {object} data - The data to render.
  * @param {function} next - The continuation function.
  */
-support.__express = function(fileName, data, next) {
-  var dirname = path.dirname(fileName);
+settings.__express = function(fileName, data, next) {
+  var dirname = this.root;
   var ext = path.extname(fileName);
 
   // Read in the template name as a buffer.
@@ -104,7 +102,7 @@ support.__express = function(fileName, data, next) {
     partials = partials.map(function(name) {
       return function(callback) {
         // Ignore those that have already been defined globally.
-        if (name in support._partials) {
+        if (name in settings._partials) {
           return callback();
         }
 
@@ -120,11 +118,11 @@ support.__express = function(fileName, data, next) {
       // Filters cannot be so easily inferred location-wise, so assume they are
       // preconfigured or exist in a filters directory.
       return function(callback) {
-        var filtersDir = support.filtersDir || "filters";
+        var filtersDir = settings.filtersDir || "filters";
         var filtersPath = path.join(dirname, filtersDir, name + ".js");
 
         // Ignore those that have already been defined globally.
-        if (name in support._filters) {
+        if (name in settings._filters) {
           return callback();
         }
 
@@ -137,14 +135,14 @@ support.__express = function(fileName, data, next) {
     // Find all files and map the partials.
     async.parallel(partials.concat(renders, filters), function(err) {
       // Register all the global partials.
-      Object.keys(support._partials).forEach(function(name) {
-        var partial = support._partials[name];
+      Object.keys(settings._partials).forEach(function(name) {
+        var partial = settings._partials[name];
         template.registerPartial(name, partial);
       });
 
       // Register all the global filters.
-      Object.keys(support._filters).forEach(function(name) {
-        var filter = support._filters[name];
+      Object.keys(settings._filters).forEach(function(name) {
+        var filter = settings._filters[name];
         template.registerFilter(name, filter);
       });
 
@@ -154,13 +152,16 @@ support.__express = function(fileName, data, next) {
   });
 };
 
-// Expose configuration express support.
+// Expose configuration express settings.
 module.exports = function(options) {
-  support.__proto__ = options;
-  return support.__express;
+  settings.__proto__ = options;
+  return settings.__express;
 };
 
-// Ensure support is accessible.
-module.exports.__proto__ = support;
+// Ensure settings is accessible.
+module.exports.settings = settings;
+
+module.exports.registerFilter = settings.registerFilter.bind(settings);
+module.exports.registerPartial = settings.registerPartial.bind(settings);
 
 module.exports.VERSION = require("./package.json").version;
