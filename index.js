@@ -18,9 +18,9 @@ settings.registerPartial = combyne.prototype.registerPartial;
  * Recursively traverses nodes returning those passing the truth function.
  *
  * @private
- * @param {array} nodes
- * @param {function} test
- * @returns {array} An array of nodes.
+ * @param {Array} nodes
+ * @param {Function} test
+ * @returns {Array} An array of nodes.
  */
 function recurse(nodes, test) {
   var memo = [];
@@ -41,14 +41,16 @@ function recurse(nodes, test) {
 }
 
 /**
- * Express settings.
+ * Processes a template, finding all its filters and nested partials.
  *
- * @param {string} fileName - The template path to load.
- * @param {object} data - The data to render.
- * @param {function} next - The continuation function.
+ * @param {string} fileName - The filename of the template.
+ * @param {Object} data - Data to render with.
+ * @param {Function} next - The next continuation.
  */
-settings.__express = function(fileName, data, next) {
+function processTemplate(fileName, data, next) {
+  var route = this;
   var dirname = this.root;
+  var dirname = path.dirname(fileName);
   var ext = path.extname(fileName);
 
   // Read in the template name as a buffer.
@@ -91,9 +93,9 @@ settings.__express = function(fileName, data, next) {
         var name = render.template;
         var renderPath = path.join(dirname, name + ext);
 
-        fs.readFile(renderPath, "utf8", function(err, contents) {
-          template.registerPartial(name, combyne(String(contents)));
-          callback(err);
+        processTemplate.call(route, renderPath, data, function(err, render) {
+          template.registerPartial(name, render);
+          callback(err, template);
         });
       };
     });
@@ -106,9 +108,11 @@ settings.__express = function(fileName, data, next) {
           return callback();
         }
 
-        fs.readFile(path.join(dirname, name + ext), function(err, partial) {
-          template.registerPartial(name, combyne(String(partial)));
-          callback(err);
+        var partialPath = path.join(dirname, name + ext);
+
+        processTemplate.call(route, partialPath, data, function(err, partial) {
+          template.registerPartial(name, partial);
+          callback(err, template);
         });
       };
     });
@@ -147,8 +151,24 @@ settings.__express = function(fileName, data, next) {
       });
 
       // Render the template.
-      next(null, template.render(data));
+      next(err, template);
     });
+  });
+}
+
+/**
+ * Express support.
+ *
+ * @param {string} fileName - The template path to load.
+ * @param {object} data - The data to render.
+ * @param {function} next - The continuation function.
+ */
+settings.__express = function(fileName, data, next) {
+  processTemplate.call(this, fileName, data, function(err, template) {
+    if (err) { return next(err); }
+
+    // Render the top level template with context data.
+    next(template.render(data));
   });
 };
 

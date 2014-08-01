@@ -4,7 +4,8 @@
   "description": "Combyne view engine for Express.",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha -- test"
+    "test": "istanbul cover _mocha -- test",
+    "mocha": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -22,12 +23,12 @@
   "homepage": "https://github.com/tbranyen/express-combyne",
   "dependencies": {
     "async": "~0.9.0",
-    "combyne": "~0.3.7"
+    "combyne": "~0.4.1"
   },
   "devDependencies": {
     "express": "~4.4.0",
-    "istanbul": "~0.2.10",
-    "mocha": "~1.20.0",
+    "istanbul": "~0.3.0",
+    "mocha": "~1.21.3",
     "supertest": "~0.13.0"
   }
 }
