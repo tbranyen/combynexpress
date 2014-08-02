@@ -47,10 +47,9 @@ function recurse(nodes, test) {
  * @param {Object} data - Data to render with.
  * @param {Function} next - The next continuation.
  */
-function processTemplate(fileName, data, next) {
+function processTemplate(fileName, data, next, noParse) {
   var route = this;
   var dirname = this.root;
-  var dirname = path.dirname(fileName);
   var ext = path.extname(fileName);
 
   // Read in the template name as a buffer.
@@ -70,7 +69,7 @@ function processTemplate(fileName, data, next) {
 
     // Find all partials.
     var partials = recurse(template.tree.nodes, function(node) {
-      return node.type === "PartialExpression";
+      return node.type === "PartialExpression" && noParse !== node.value;
     }).map(function(node) { return node.value; });
 
     // Find all filters.
@@ -93,10 +92,14 @@ function processTemplate(fileName, data, next) {
         var name = render.template;
         var renderPath = path.join(dirname, name + ext);
 
+        // The last argument of this call is the noparse option that specifies
+        // the virtual partial should not be loaded.
         processTemplate.call(route, renderPath, data, function(err, render) {
+          if (err) { return callback(err); }
+
           template.registerPartial(name, render);
           callback(err, template);
-        });
+        }, render.partial);
       };
     });
 
@@ -111,6 +114,8 @@ function processTemplate(fileName, data, next) {
         var partialPath = path.join(dirname, name + ext);
 
         processTemplate.call(route, partialPath, data, function(err, partial) {
+          if (err) { return callback(err); }
+
           template.registerPartial(name, partial);
           callback(err, template);
         });
@@ -130,14 +135,24 @@ function processTemplate(fileName, data, next) {
           return callback();
         }
 
-        // Register the exported function.
-        template.registerFilter(name, require(filtersPath));
-        callback(err);
+        try {
+          var filter = require(filtersPath);
+
+          // Register the exported function.
+          template.registerFilter(name, filter);
+        }
+        catch (ex) {
+          return callback(ex);
+        }
+
+        callback(null, filter);
       };
     });
 
     // Find all files and map the partials.
     async.parallel(partials.concat(renders, filters), function(err) {
+      if (err) { return next(err); }
+
       // Register all the global partials.
       Object.keys(settings._partials).forEach(function(name) {
         var partial = settings._partials[name];

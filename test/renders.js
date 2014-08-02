@@ -20,4 +20,14 @@ describe("Renders", function() {
       .get("/render")
       .expect("\nHello from render\n\n\n", done);
   });
+
+  it("can find partials correctly from a nested view", function(done) {
+    app.get("/invert", function(req, res) {
+      res.render("page");
+    });
+
+    request(app)
+      .get("/invert")
+      .expect("\nHello from virtual render!\n\n\n", done);
+  });
 });
