@@ -183,7 +183,7 @@ settings.__express = function(fileName, data, next) {
     if (err) { return next(err); }
 
     // Render the top level template with context data.
-    next(template.render(data));
+    next(null, template.render(data));
   });
 };
 
