@@ -21,6 +21,9 @@ var combynExpress = require("combynexpress");
 
 ### Registering with Express. ###
 
+Note: The lookup folder name is **views** and it is relative to your working
+directory.
+
 ``` javascript
 app.engine("combyne", combynExpress());
 app.set("view engine", "combyne");

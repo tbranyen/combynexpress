@@ -1,3 +1,3 @@
-{%render layouts/main as content%}
+{%extend layouts/main as content%}
 Hello from virtual render!
-{%endrender%}
+{%endextend%}

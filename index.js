@@ -62,9 +62,9 @@ function processTemplate(fileName, data, next, noParse) {
     // Send back the compiled template.
     var template = combyne(String(buffer));
 
-    // Find all renders.
-    var renders = recurse(template.tree.nodes, function(node) {
-      return node.type === "RenderExpression";
+    // Find all extend.
+    var extend = recurse(template.tree.nodes, function(node) {
+      return node.type === "ExtendExpression";
     }).map(function(node) { return node.value; });
 
     // Find all partials.
@@ -86,8 +86,8 @@ function processTemplate(fileName, data, next, noParse) {
       filters = filters.join(" ").split(" ");
     }
 
-    // Map all renders to functions.
-    renders = renders.map(function(render) {
+    // Map all extend to functions.
+    extend = extend.map(function(render) {
       return function(callback) {
         var name = render.template;
         var renderPath = path.join(dirname, name + ext);
@@ -150,7 +150,7 @@ function processTemplate(fileName, data, next, noParse) {
     });
 
     // Find all files and map the partials.
-    async.parallel(partials.concat(renders, filters), function(err) {
+    async.parallel(partials.concat(extend, filters), function(err) {
       if (err) { return next(err); }
 
       // Register all the global partials.
