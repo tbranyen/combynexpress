@@ -18,7 +18,7 @@ describe("Partials", function() {
 
     request(app)
       .get("/partial")
-      .expect("Hello from partial!\n\n", done);
+      .expect("Hello from partial!\n", done);
   });
 
   it("will render a global partial", function(done) {
@@ -28,7 +28,7 @@ describe("Partials", function() {
 
     support.registerPartial("partials/test", {
       render: function() {
-        return "Hello from global!";
+        return "Hello from global!\n";
       }
     });
 

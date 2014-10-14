@@ -34,6 +34,12 @@ function recurse(nodes, test) {
       memo.push(node);
     }
 
+    if (node.conditions) {
+      memo.push.apply(memo, recurse(node.conditions.map(function(node) {
+        return node.value;
+      }), test, memo));
+    }
+
     memo.push.apply(memo, recurse(node.nodes, test, memo));
   });
 
@@ -80,7 +86,7 @@ function processTemplate(fileName, data, next, noParse) {
         return filter.value;
       }).join(" ");
     });
-    
+
     // Flatten the array.
     if (filters.length) {
       filters = filters.join(" ").split(" ");
