@@ -1,6 +1,6 @@
 {
   "name": "combynexpress",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Combyne view engine for Express.",
   "main": "index.js",
   "scripts": {
