@@ -77,9 +77,9 @@ An example layout:
 A page template that looks like this:
 
 ``` html
-{%render layout as body%}
+{%extend layout as body%}
 Hello world
-{%endrender%}
+{%endextend%}
 ```
 
 This will automatically fetch the layout view and render the page template

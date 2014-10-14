@@ -30,6 +30,10 @@ function recurse(nodes, test) {
   }
 
   nodes.forEach(function(node) {
+    if (!node) {
+      return;
+    }
+
     if (test(node)) {
       memo.push(node);
     }
