@@ -1,6 +1,6 @@
 {
   "name": "combynexpress",
-  "version": "0.3.0",
+  "version": "0.6.0",
   "description": "Combyne view engine for Express.",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/tbranyen/express-combyne",
   "dependencies": {
     "async": "~0.9.0",
-    "combyne": "~0.5.0"
+    "combyne": "~0.6.0"
   },
   "devDependencies": {
     "express": "~4.4.0",
