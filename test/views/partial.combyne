@@ -1,1 +1,1 @@
-{%partial partials/test%}
+{%partial partials/test .%}
