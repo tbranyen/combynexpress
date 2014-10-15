@@ -46,4 +46,18 @@ describe("Partials", function() {
       .get("/global")
       .expect("Hello from global!\n", done);
   });
+
+  it("will render a global partial containing a filter", function(done) {
+    app.get("/partial-with-global-filter", function(req, res) {
+      res.render("partial-with-filter", { msg: "filtered partial" });
+    });
+
+    support.registerFilter("uppercase", function(value) {
+      return value.toUpperCase();
+    });
+
+    request(app)
+      .get("/partial-with-global-filter")
+      .expect("Hello from FILTERED PARTIAL!\n", done);
+  });
 });
