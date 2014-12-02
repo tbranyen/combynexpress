@@ -13,12 +13,22 @@ describe("Partials", function() {
 
   it("can render a partial without any data", function(done) {
     app.get("/partial", function(req, res) {
-      res.render("partial", { msg: "extension" });
+      res.render("partial", { msg: "partial" });
     });
 
     request(app)
       .get("/partial")
       .expect("Hello from partial!\n", done);
+  });
+
+  it("will render a partial containing a filter", function(done) {
+    app.get("/partial-with-filter", function(req, res) {
+      res.render("partial-with-filter", { msg: "filtered partial" });
+    });
+
+    request(app)
+      .get("/partial-with-filter")
+      .expect("Hello from FILTERED PARTIAL!\n", done);
   });
 
   it("will render a global partial", function(done) {
@@ -35,5 +45,19 @@ describe("Partials", function() {
     request(app)
       .get("/global")
       .expect("Hello from global!\n", done);
+  });
+
+  it("will render a global partial containing a filter", function(done) {
+    app.get("/partial-with-global-filter", function(req, res) {
+      res.render("partial-with-filter", { msg: "filtered partial" });
+    });
+
+    support.registerFilter("uppercase", function(value) {
+      return value.toUpperCase();
+    });
+
+    request(app)
+      .get("/partial-with-global-filter")
+      .expect("Hello from FILTERED PARTIAL!\n", done);
   });
 });

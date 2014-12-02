@@ -149,7 +149,7 @@ function processTemplate(fileName, data, next, noParse) {
           var filter = require(filtersPath);
 
           // Register the exported function.
-          template.registerFilter(name, filter);
+          settings._filters[name] = filter;
         }
         catch (ex) {
           return callback(ex);
