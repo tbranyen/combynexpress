@@ -127,6 +127,7 @@ function processTemplate(fileName, data, next, noParse) {
           if (err) { return callback(err); }
 
           template.registerPartial(name, partial);
+          settings._partials[name] = partial;
           callback(err, template);
         });
       };
