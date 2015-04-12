@@ -34,14 +34,32 @@ function recurse(nodes, test) {
       return;
     }
 
+
     if (test(node)) {
       memo.push(node);
     }
+
 
     if (node.conditions) {
       memo.push.apply(memo, recurse(node.conditions.map(function(node) {
         return node.value;
       }), test, memo));
+    }
+
+    if (node.els) {
+      memo.push.apply(memo, recurse(node.els.nodes.map(function(node) {
+        if (node.type === "PartialExpression") {
+          memo = memo.concat(recurse([node], test));
+        }
+      }).filter(Boolean), test, memo));
+    }
+
+    if (node.elsif) {
+      memo.push.apply(memo, recurse(node.elsif.nodes.map(function(node) {
+        if (node.type === "PartialExpression") {
+          memo = memo.concat(recurse([node], test));
+        }
+      }).filter(Boolean), test, memo));
     }
 
     memo.push.apply(memo, recurse(node.nodes, test, memo));
