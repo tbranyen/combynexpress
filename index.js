@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const combyne = require("combyne");
 const async = require("async");
+const visitCombyne = require("visit-combyne");
 
 // Proxy the settings from the internal combyne object
 var settings = combyne.settings;
@@ -13,60 +14,6 @@ settings._partials = {};
 // Proxy the filter and partial registration methods.
 settings.registerFilter = combyne.prototype.registerFilter;
 settings.registerPartial = combyne.prototype.registerPartial;
-
-/**
- * Recursively traverses nodes returning those passing the truth function.
- *
- * @private
- * @param {Array} nodes
- * @param {Function} test
- * @returns {Array} An array of nodes.
- */
-function recurse(nodes, test) {
-  var memo = [];
-
-  if (!nodes) {
-    return memo;
-  }
-
-  nodes.forEach(function(node) {
-    if (!node) {
-      return;
-    }
-
-
-    if (test(node)) {
-      memo.push(node);
-    }
-
-
-    if (node.conditions) {
-      memo.push.apply(memo, recurse(node.conditions.map(function(node) {
-        return node.value;
-      }), test, memo));
-    }
-
-    if (node.els) {
-      memo.push.apply(memo, recurse(node.els.nodes.map(function(node) {
-        if (node.type === "PartialExpression") {
-          memo = memo.concat(recurse([node], test));
-        }
-      }).filter(Boolean), test, memo));
-    }
-
-    if (node.elsif) {
-      memo.push.apply(memo, recurse(node.elsif.nodes.map(function(node) {
-        if (node.type === "PartialExpression") {
-          memo = memo.concat(recurse([node], test));
-        }
-      }).filter(Boolean), test, memo));
-    }
-
-    memo.push.apply(memo, recurse(node.nodes, test, memo));
-  });
-
-  return memo;
-}
 
 /**
  * Processes a template, finding all its filters and nested partials.
@@ -91,17 +38,17 @@ function processTemplate(fileName, data, next, noParse) {
     var template = combyne(String(buffer));
 
     // Find all extend.
-    var extend = recurse(template.tree.nodes, function(node) {
+    var extend = visitCombyne(template.tree.nodes, function(node) {
       return node.type === "ExtendExpression";
     }).map(function(node) { return node.value; });
 
     // Find all partials.
-    var partials = recurse(template.tree.nodes, function(node) {
+    var partials = visitCombyne(template.tree.nodes, function(node) {
       return node.type === "PartialExpression" && noParse !== node.value;
     }).map(function(node) { return node.value; });
 
     // Find all filters.
-    var filters = recurse(template.tree.nodes, function(node) {
+    var filters = visitCombyne(template.tree.nodes, function(node) {
       return node.filters && node.filters.length;
     }).map(function(node) {
       return node.filters.map(function(filter) {
