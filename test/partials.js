@@ -11,6 +11,10 @@ describe("Partials", function() {
   app.engine("combyne", support());
   app.set("view engine", "combyne");
 
+  afterEach(function() {
+    delete support.settings._filters.uppercase;
+  });
+
   it("can render a partial without any data", function(done) {
     app.get("/partial", function(req, res) {
       res.render("partial", { msg: "partial" });
@@ -52,7 +56,7 @@ describe("Partials", function() {
       res.render("partial-with-filter", { msg: "filtered partial" });
     });
 
-    support.registerFilter("uppercase", function(value) {
+    support.settings.registerFilter("uppercase", function(value) {
       return value.toUpperCase();
     });
 

@@ -22,14 +22,14 @@
   },
   "homepage": "https://github.com/tbranyen/express-combyne",
   "dependencies": {
-    "async": "^0.9.0",
-    "combyne": "^0.7.1",
-    "visit-combyne": "^1.0.1"
+    "async": "^1.4.2",
+    "combyne": "^0.8.1",
+    "visit-combyne": "^1.0.2"
   },
   "devDependencies": {
-    "express": "^4.12.3",
-    "istanbul": "^0.3.13",
-    "mocha": "^2.2.4",
-    "supertest": "^0.15.0"
+    "express": "^4.13.3",
+    "istanbul": "^0.3.18",
+    "mocha": "^2.2.5",
+    "supertest": "^1.0.1"
   }
 }

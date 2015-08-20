@@ -11,6 +11,10 @@ describe("Filters", function() {
   app.engine("combyne", support());
   app.set("view engine", "combyne");
 
+  afterEach(function() {
+    delete support.settings._filters.reverse;
+  });
+
   it("can execute a basic filter", function(done) {
     app.get("/filter", function(req, res) {
       res.render("filter", { msg: "extension" });
