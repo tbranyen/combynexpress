@@ -1,6 +1,6 @@
 {
   "name": "combynexpress",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Combyne view engine for Express.",
   "main": "index.js",
   "scripts": {
@@ -23,13 +23,13 @@
   "homepage": "https://github.com/tbranyen/express-combyne",
   "dependencies": {
     "async": "^1.4.2",
-    "combyne": "^0.8.1",
-    "visit-combyne": "^1.0.2"
+    "combyne": "^2.0.0",
+    "visit-combyne": "^1.0.3"
   },
   "devDependencies": {
-    "express": "^4.13.3",
-    "istanbul": "^0.3.18",
-    "mocha": "^2.2.5",
-    "supertest": "^1.0.1"
+    "express": "^4.13.4",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5",
+    "supertest": "^1.2.0"
   }
 }
